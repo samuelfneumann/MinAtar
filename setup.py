@@ -5,6 +5,10 @@ install_requires = [
     'numpy>=1.16.2',
 ]
 
+numba_requires = [
+    'numbda>=0.54.0'
+]
+
 gui_requires = [
     'matplotlib>=3.0.3',
     'seaborn>=0.9.0',
@@ -30,6 +34,7 @@ setup(
     entry_points=entry_points,
     extras_require={
         'gui': gui_requires,
-        'gym': gym_requires
+        'gym': gym_requires,
+        'numba': numba_requires,
     },
     install_requires=install_requires)
