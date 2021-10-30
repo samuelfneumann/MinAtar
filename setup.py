@@ -2,16 +2,16 @@ from setuptools import setup
 
 packages = ['minatar', 'minatar.environments']
 install_requires = [
-    'cycler>=0.10.0',
-    'kiwisolver>=1.0.1',
-    'matplotlib>=3.0.3',
     'numpy>=1.16.2',
-    'pyparsing>=2.3.1',
-    'python-dateutil>=2.8.0',
-    'pytz>=2018.9',
-    'scipy>=1.2.1',
+]
+
+gui_requires = [
+    'matplotlib>=3.0.3',
     'seaborn>=0.9.0',
-    'six>=1.12.0',
+]
+
+gym_requires = [
+    'gym>=0.8.0'
 ]
 
 entry_points = {
@@ -28,4 +28,8 @@ setup(
     license='GPL',
     packages=packages,
     entry_points=entry_points,
+    extras_require={
+        'gui': gui_requires,
+        'gym': gym_requires
+    },
     install_requires=install_requires)
