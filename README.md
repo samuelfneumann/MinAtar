@@ -55,6 +55,14 @@ Use the arrow keys to move and space bar to fire. Also, press q to quit and r to
 
 Also included in the examples directory are example implementations of DQN (dqn.py) and online actor-critic with eligibility traces (AC_lambda.py).
 
+## OpenAI Gym Wrapper
+MinAtar now includes an OpenAI Gym plugin using the Gym plugin system. If a sufficiently recent version of OpenAI gym (`pip install gym==0.21.0` works) is installed, this plugin should be automatically available after installing MinAtar as normal. A gym environment can then be constructed as follows:
+```bash
+import gym
+env = gym.make('MinAtar/<game>')
+````
+where game is one of: Asterix-v0, Breakout-v0, Freeway-v0, Seaquest-v0, SpaceInvaders-v0, Asterix-v1, Breakout-v1, Freeway-v1, Seaquest-v1, SpaceInvaders-v1. For each game, v0 specifies the version with all 6 actions available (some of which are equivalent to no-op depending on the game), while v1 specifies the version which uses the minimal action set for the game. Note that the results included in this repo and the associated paper use the full action set of 6 actions.
+
 ## Visualizing the Environments
 We provide 2 ways to visualize a MinAtar environment.
 ### Using Environment.display_state()
@@ -72,7 +80,7 @@ This is the simplest way to visualize the environments, unless you need to handl
 ### Using GUI class
 We also include a slightly more complex GUI to visualize the environments and optionally handle user input. This GUI is used in examples/human_play.py to play as a human and examples/agent_play.py to visualize the performance of trained agents. To use the GUI you can import it in your code with:
 ```python
-from minatar import GUI
+from minatar.gui import GUI
 ```
 Initialize an instance of the GUI class by providing a name for the window, and the integer number of input channels for the minatar environment to be visualized. For example:
 ```python

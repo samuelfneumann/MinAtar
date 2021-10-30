@@ -40,7 +40,7 @@ diver_move_interval = 5
 #
 #####################################################################################################################
 class Env:
-    def __init__(self, ramping = True, seed = None):
+    def __init__(self, ramping = True, random_state = None):
         self.channels ={
             'sub_front':0,
             'sub_back':1,
@@ -55,7 +55,10 @@ class Env:
         }
         self.action_map = ['n','l','u','r','d','f']
         self.ramping = ramping
-        self.random = np.random.RandomState(seed)
+        if random_state is None:
+            self.random = np.random.RandomState()
+        else:
+            self.random = random_state
         self.reset()
 
     # Update environment according to agent action
@@ -110,6 +113,7 @@ class Env:
                             self.e_subs.remove(x)
                             self.f_bullets.remove(bullet)
                             r+=1
+                            break
 
         # Update divers
         for diver in reversed(self.divers):
