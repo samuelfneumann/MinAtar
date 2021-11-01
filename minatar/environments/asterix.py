@@ -70,7 +70,7 @@ class Env:
         self.spawn_timer -= 1
         self.move_timer -= 1
 
-        #Ramp difficulty if interval has elapsed
+        # Ramp difficulty if interval has elapsed
         if self.ramping and (self.spawn_speed>1 or self.move_speed>1):
             if(self.ramp_timer>=0):
                 self.ramp_timer-=1
