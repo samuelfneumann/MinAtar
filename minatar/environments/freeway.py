@@ -2,9 +2,10 @@
 # Authors:                                                                                                     #
 # Kenny Young (kjyoung@ualberta.ca)                                                                            #
 # Tian Tian (ttian@ualberta.ca)                                                                                #
+# Robert Joseph (rjoseph1@ualberta.ca) (New Optimized Version)                                                 #                                                                            #
 ################################################################################################################
 import numpy as np
-
+from minatar.utils import try2jit
 
 #####################################################################################################################
 # Constants
@@ -46,6 +47,7 @@ class Env:
         self.reset()
 
     # Update environment according to agent action
+    @try2jit
     def act(self, a):
         r = 0
         if(self.terminal):
@@ -90,15 +92,17 @@ class Env:
         return r, self.terminal
 
     # Query the current level of the difficulty ramp, difficulty does not ramp in this game, so return None
+    @try2jit
     def difficulty_ramp(self):
         return None        
 
     # Process the game-state into the 10x10xn state provided to the agent and return
+    @try2jit
     def state(self):
-        state = np.zeros((10,10,len(self.channels)),dtype=bool)
-        state[self.pos,4,self.channels['chicken']] = 1
+        state = np.zeros((len(self.channels,10,10)),dtype=bool)
+        state[self.channels['chicken'],self.pos,4] = 1
         for car in self.cars:
-            state[car[1],car[0], self.channels['car']] = 1
+            state[self.channels['car'], car[1], car[0]] = 1
             back_x = car[0]-1 if car[3]>0 else car[0]+1
             if(back_x<0):
                 back_x=9
@@ -114,10 +118,11 @@ class Env:
                 trail = self.channels['speed4']
             elif(abs(car[3])==5):
                 trail = self.channels['speed5']
-            state[car[1],back_x, trail] = 1
+            state[trail,car[1],back_x] = 1
         return state
 
     # Randomize car speeds and directions, also reset their position if initialize=True
+    @try2jit
     def _randomize_cars(self, initialize=False):
         speeds = self.random.randint(1,6,8)
         directions = self.random.choice([-1,1],8)
@@ -131,6 +136,7 @@ class Env:
                 self.cars[i][2:4]=[abs(speeds[i]),speeds[i]]
 
     # Reset to start state for new episode
+    @try2jit
     def reset(self):
         self._randomize_cars(initialize=True)
         self.pos = 9
@@ -139,10 +145,12 @@ class Env:
         self.terminal = False
 
     # Dimensionality of the game-state (10x10xn)
+    @try2jit
     def state_shape(self):
-        return [10,10,len(self.channels)]
-
+        return [len(self.channels),10,10]
+        
     # Subset of actions that actually have a unique impact in this environment
+    @try2jit
     def minimal_action_set(self):
         minimal_actions = ['n','u','d']
         return [self.action_map.index(x) for x in minimal_actions]

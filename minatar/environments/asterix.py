@@ -1,7 +1,8 @@
 ################################################################################################################
-# Authors:                                                                                                     #
-# Kenny Young (kjyoung@ualberta.ca)                                                                            #
-# Tian Tian (ttian@ualberta.ca)                                                                                #
+# Authors:                                                                                                      #
+# Kenny Young (kjyoung@ualberta.ca)                                                                             #
+# Tian Tian (ttian@ualberta.ca)                                                                                 #                             
+# Robert Joseph (rjoseph1@ualberta.ca)                                                                          #                           
 ################################################################################################################
 import numpy as np
 from minatar.utils import choice, sample, try2jit
@@ -125,7 +126,7 @@ class Env:
 
     # Dimensionality of the game-state (10x10xn)
     def state_shape(self):
-        return [10,10,len(self.channels)]
+        return [len(self.channels),10,10]
 
     # Subset of actions that actually have a unique impact in this environment
     def minimal_action_set(self):
@@ -145,10 +146,10 @@ class Env:
 # a (10, 10, 4) representation of game state
 @try2jit
 def _build_state(entities, x, y):
-    state = np.zeros((10, 10, 4), dtype='bool')
+    state = np.zeros((4, 10, 10), dtype='bool')
 
     # add player entity
-    state[y, x, 0] = 1
+    state[0, y, x] = 1
 
     # add non-player entities
     for i in range(len(entities)):
@@ -160,12 +161,12 @@ def _build_state(entities, x, y):
 
         # if gold, then put in channel 3
         c = 3 if gold else 1
-        state[ey, ex, c] = 1
+        state[c, ey, ex] = 1
 
         back_x = ex - 1 if di else ex + 1
         if back_x >= 0 and back_x <= 9:
             # add trail
-            state[ey, back_x, 2] = 1
+            state[2, ey, back_x] = 1
 
     return state
 

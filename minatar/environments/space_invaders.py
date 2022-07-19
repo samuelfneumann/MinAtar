@@ -2,9 +2,10 @@
 # Authors:                                                                                                     #
 # Kenny Young (kjyoung@ualberta.ca)                                                                            #
 # Tian Tian (ttian@ualberta.ca)                                                                                #
+# Robert Joseph (rjoseph1@ualberta.ca) (New Optimized Version)                                                 #                                                                            #
 ################################################################################################################
 import numpy as np
-
+from minatar.utils import try2jit
 
 #####################################################################################################################
 # Constants
@@ -47,6 +48,7 @@ class Env:
         self.reset()
 
     # Update environment according to agent action
+    @try2jit
     def act(self, a):
         r = 0
         if(self.terminal):
@@ -110,6 +112,7 @@ class Env:
         return r, self.terminal
 
     # Find the alien closest to player in manhattan distance, currently used to decide which alien shoots
+    @try2jit
     def _nearest_alien(self, pos):
         search_order = [i for i in range(10)]
         search_order.sort(key=lambda x: abs(x-pos))
@@ -119,23 +122,26 @@ class Env:
         return None
 
     # Query the current level of the difficulty ramp, could be used as additional input to agent for example
+    @try2jit
     def difficulty_ramp(self):
         return self.ramp_index
             
     # Process the game-state into the 10x10xn state provided to the agent and return
+    @try2jit
     def state(self):
-        state = np.zeros((10,10,len(self.channels)),dtype=bool)
-        state[9,self.pos,self.channels['cannon']] = 1
-        state[:,:, self.channels['alien']] = self.alien_map
+        state = np.zeros((len(self.channels),10,10),dtype=bool)
+        state[self.channels['cannon'],9,self.pos] = 1
+        state[self.channels['alien'],:,:] = self.alien_map
         if(self.alien_dir<0):
-            state[:,:, self.channels['alien_left']] = self.alien_map
+            state[self.channels['alien_left'],:,:] = self.alien_map
         else:
-            state[:,:, self.channels['alien_right']] = self.alien_map
-        state[:,:, self.channels['friendly_bullet']] = self.f_bullet_map
-        state[:,:, self.channels['enemy_bullet']] = self.e_bullet_map
+            state[self.channels['alien_right'],:,:] = self.alien_map
+        state[self.channels['friendly_bullet'],:,:] = self.f_bullet_map
+        state[self.channels['enemy_bullet'],:,:] = self.e_bullet_map
         return state
 
     # Reset to start state for new episode
+    @try2jit
     def reset(self):
         self.pos = 5
         self.f_bullet_map = np.zeros((10,10))
@@ -150,11 +156,13 @@ class Env:
         self.shot_timer = 0
         self.terminal = False
 
-    # Dimensionality of the game-state (10x10xn)
+    # Dimensionality of the game-state (nx10x10)
+    @try2jit
     def state_shape(self):
-        return [10,10,len(self.channels)]
+        return [len(self.channels),10,10]
 
     # Subset of actions that actually have a unique impact in this environment
+    @try2jit
     def minimal_action_set(self):
         minimal_actions = ['n','l','r','f']
         return [self.action_map.index(x) for x in minimal_actions]

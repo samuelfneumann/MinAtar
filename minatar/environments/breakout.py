@@ -1,7 +1,8 @@
 ################################################################################################################
-# Authors:                                                                                                     #
-# Kenny Young (kjyoung@ualberta.ca)                                                                            #
-# Tian Tian (ttian@ualberta.ca)                                                                                #
+# Authors:                                                                                                      #
+# Kenny Young (kjyoung@ualberta.ca)                                                                             #
+# Tian Tian (ttian@ualberta.ca)                                                                                 #
+# Robert Joseph (rjoseph1@ualberta.ca)                                                                          #                           #
 ################################################################################################################
 from re import X
 import numpy as np
@@ -81,7 +82,7 @@ class Env:
 
     # Dimensionality of the game-state (10x10xn)
     def state_shape(self):
-        return [10,10,len(self.channels)]
+        return [len(self.channels), 10, 10]
 
     # Subset of actions that actually have a unique impact in this environment
     def minimal_action_set(self):
@@ -167,18 +168,18 @@ def _move_ball(x, y, dx, dy, bricks, px):
 
 @try2jit
 def _build_state(x, y, px, lx, ly, bricks):
-    state = np.zeros((10, 10, 4), dtype='bool')
+    state = np.zeros((4, 10, 10), dtype='bool')
 
     # set ball
-    state[y, x, 1] = 1
+    state[1, y, x] = 1
 
     # set paddle
-    state[9, px, 0] = 1
+    state[0, 9, px] = 1
 
     # set trail
-    state[ly, lx, 2] = 1
+    state[2, ly, lx] = 1
 
     # set bricks
-    state[:, :, 3] = bricks
+    state[3, :, :] = bricks
 
     return state
