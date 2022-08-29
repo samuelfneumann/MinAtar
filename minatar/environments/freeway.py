@@ -2,10 +2,9 @@
 # Authors:                                                                                                     #
 # Kenny Young (kjyoung@ualberta.ca)                                                                            #
 # Tian Tian (ttian@ualberta.ca)                                                                                #
-# Robert Joseph (rjoseph1@ualberta.ca) (New Optimized Version)                                                 #                                                                            #
+# Robert Joseph (rjoseph1@ualberta.ca) (New Optimized Version)                                                 #
 ################################################################################################################
 import numpy as np
-from minatar.utils import try2jit
 
 #####################################################################################################################
 # Constants

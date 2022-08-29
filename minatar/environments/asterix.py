@@ -124,7 +124,7 @@ class Env:
         self.ramp_index = 0
         self.terminal = False
 
-    # Dimensionality of the game-state (10x10xn)
+    # Dimensionality of the game-state (nx10x10)
     def state_shape(self):
         return [len(self.channels),10,10]
 

@@ -2,7 +2,7 @@
 # Authors:                                                                                                      #
 # Kenny Young (kjyoung@ualberta.ca)                                                                             #
 # Tian Tian (ttian@ualberta.ca)                                                                                 #
-# Robert Joseph (rjoseph1@ualberta.ca)                                                                          #                           #
+# Robert Joseph (rjoseph1@ualberta.ca)                                                                          #        
 ################################################################################################################
 from re import X
 import numpy as np
@@ -80,7 +80,7 @@ class Env:
         self.last_y = self.ball_y
         self.terminal = False
 
-    # Dimensionality of the game-state (10x10xn)
+    # Dimensionality of the game-state (nx10x10)
     def state_shape(self):
         return [len(self.channels), 10, 10]
 

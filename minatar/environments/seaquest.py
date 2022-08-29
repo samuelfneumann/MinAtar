@@ -2,11 +2,9 @@
 # Authors:                                                                                                     #
 # Kenny Young (kjyoung@ualberta.ca)                                                                            #
 # Tian Tian (ttian@ualberta.ca)                                                                                #
-# Robert Joseph (rjoseph1@ualberta.ca) (New Optimized Version)                                                 #                                                                            #
+# Robert Joseph (rjoseph1@ualberta.ca) (New Optimized Version)                                                 #
 ################################################################################################################
 import numpy as np
-from minatar.utils import try2jit
-
 
 #####################################################################################################################
 # Constants
@@ -64,7 +62,6 @@ class Env:
         self.reset()
 
     # Update environment according to agent action
-    @try2jit
     def act(self, a):
         r = 0
         if(self.terminal):
@@ -213,7 +210,6 @@ class Env:
     # Called when player hits surface (top row) if they have no divers, this ends the game, 
     # if they have 6 divers this gives reward proportional to the remaining oxygen and restores full oxygen
     # otherwise this reduces the number of divers and restores full oxygen
-    @try2jit
     def _surface(self):
         self.surface = True
         if(self.diver_count == 6):
@@ -233,7 +229,6 @@ class Env:
 
     # Spawn an enemy fish or submarine in random row and random direction,
     # if the resulting row and direction would lead to a collision, do nothing instead
-    @try2jit
     def _spawn_enemy(self):
         lr = self.random.choice([True,False])
         is_sub = self.random.choice([True,False], p=[1/3,2/3])
@@ -249,7 +244,6 @@ class Env:
             self.e_fish+=[[x,y,lr,self.move_speed]]
 
     # Spawn a diver in random row with random direction
-    @try2jit
     def _spawn_diver(self):
         lr = self.random.choice([True,False])
         x = 0 if lr else 9
@@ -257,12 +251,10 @@ class Env:
         self.divers+=[[x,y,lr,diver_move_interval]]
 
     # Query the current level of the difficulty ramp, could be used as additional input to agent for example
-    @try2jit
     def difficulty_ramp(self):
         return self.ramp_index
 
     # Process the game-state into the nx10x10 state provided to the agent and return
-    @try2jit
     def state(self):
         state = np.zeros((len(self.channels),10,10),dtype=bool)
         state[self.channels['sub_front'],self.sub_y,self.sub_x] = 1
